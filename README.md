@@ -40,10 +40,10 @@ the various keys of the object will be run through.
 
 The keys '?', '*' and '@after' have special meaning:
 
-'?':      Run any keys on the target object that are not specified in the spec through
+* '?':      Run any keys on the target object that are not specified in the spec through
           this pipeline.
-'*':      Run all keys through this pipeline
-'@after': If there are no errors, run this pipeline.
+* '*':      Run all keys through this pipeline
+* '@after': If there are no errors, run this pipeline.
 
 ### Pipelines
 
