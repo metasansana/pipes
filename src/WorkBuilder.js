@@ -16,6 +16,34 @@ class WorkBuilder {
         this.builtins = builtins;
     }
 
+    _isForArrays(key) {
+
+        if (key[0] === '[')
+            if (key[key.length - 1] === ']')
+                return true;
+        return false;
+    }
+
+    _keys(spec) {
+
+        var keys = Object.keys(spec);
+        WorkBuilder.KEYWORDS.forEach(word => {
+
+            var loc = keys.indexOf(word);
+
+            if (loc > -1)
+                keys.splice(loc, 1);
+        });
+        return keys;
+    }
+
+    _many(value, spec) {
+
+        value = (Array.isArray(value)) ? value : [value];
+        return value.map(v => spec.slice());
+
+    }
+
     _substitute(line, builtins) {
 
         var filter;
@@ -45,18 +73,16 @@ class WorkBuilder {
 
         var work = Object.create(null);
         var spec = this.spec;
-        var o = this.o;
-        var filter;
 
-        Object.keys(o).
+        Object.keys(this.o).
+        concat(this._keys(spec)).
+        filter((key, index, array) => (array.indexOf(key) === index)).
         forEach(key => {
 
             work[key] = [];
 
             if (WorkBuilder.KEYWORDS.indexOf(key) > -1) {
-
                 work[key] = null;
-
             } else {
 
                 if (spec[key]) {

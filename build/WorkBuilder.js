@@ -28,6 +28,35 @@ var WorkBuilder = (function () {
     }
 
     _createClass(WorkBuilder, [{
+        key: '_isForArrays',
+        value: function _isForArrays(key) {
+
+            if (key[0] === '[') if (key[key.length - 1] === ']') return true;
+            return false;
+        }
+    }, {
+        key: '_keys',
+        value: function _keys(spec) {
+
+            var keys = Object.keys(spec);
+            WorkBuilder.KEYWORDS.forEach(function (word) {
+
+                var loc = keys.indexOf(word);
+
+                if (loc > -1) keys.splice(loc, 1);
+            });
+            return keys;
+        }
+    }, {
+        key: '_many',
+        value: function _many(value, spec) {
+
+            value = Array.isArray(value) ? value : [value];
+            return value.map(function (v) {
+                return spec.slice();
+            });
+        }
+    }, {
         key: '_substitute',
         value: function _substitute(line, builtins) {
 
@@ -56,15 +85,14 @@ var WorkBuilder = (function () {
 
             var work = Object.create(null);
             var spec = this.spec;
-            var o = this.o;
-            var filter;
 
-            Object.keys(o).forEach(function (key) {
+            Object.keys(this.o).concat(this._keys(spec)).filter(function (key, index, array) {
+                return array.indexOf(key) === index;
+            }).forEach(function (key) {
 
                 work[key] = [];
 
                 if (WorkBuilder.KEYWORDS.indexOf(key) > -1) {
-
                     work[key] = null;
                 } else {
 
