@@ -78,7 +78,7 @@ var Flow = (function () {
         key: 'run',
         value: function run() {
             for (var key in this._work) if (Object.prototype.hasOwnProperty.call(this._work, key)) {
-                if (this._work[key] != null) _Pipeline2['default'].create(key, this._o[key], this._work[key], this).run();
+                if (this._work[key] != null) _Pipeline2['default'].create(key, this._o[key] || null, this._work[key], this).run();
             }
         }
     }]);
