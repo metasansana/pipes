@@ -11,10 +11,13 @@ var _Pipe = require('./Pipe');
 
 var _Pipe2 = _interopRequireDefault(_Pipe);
 
-var builtins = Object.create(null);
+var _PipeError = require('./PipeError');
+
+var _PipeError2 = _interopRequireDefault(_PipeError);
 
 exports.Pipe = _Pipe2['default'];
+exports.PipeError = _PipeError2['default'];
 
-function createPipe(spec, builtins) {
-    return new _Pipe2['default'](spec, builtins || Object.create(null));
+function createPipe(spec) {
+    return new _Pipe2['default'](spec);
 }

@@ -25,7 +25,7 @@ var spec = {
 
 };
 
-var pipe = pipes.create(spec, builtins);
+var pipe = pipes.create(spec);
 pipe.run({name:'Lasana', age:78}, function(ok, transformed, errors) {
 
   if(ok)
@@ -71,22 +71,22 @@ examples:
 
 A transform, validator, filter in a pipeline has the following signature:
 
-`function(key, value, arg1..argn, flow)`
+`function(key, value, flow, arg1..argn)`
 
 Where `arg1..argn` represents any arguments declared in the spec.
 
 `flow` refers to an instance of the `Flow` class which coordinates the
 flow or key value pairs through the pipeline.
 
-Each transform, validator or filter in the pipeline is executed one 
-by one and MUST call `flow.next()` when finished, in order for the "pipeline to keep running".
+Each filter in the pipeline is executed one 
+by one and MUST call `flow.next()` when finished, in order for the pipeline to keep running.
 
 `flow.next()` is defined as:
 
 ```javascript
 
 @param {Error|null} err Pass an error object here to indicate an error
-                        occured. Very useful for validation.
+                        occured. Very useful for validation; stops the flow here.
 @param {string} key     The key of the property that has finished, 
                         this gives you a chance to format the key name.
 @param {*} value        The value you want the key to have

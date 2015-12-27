@@ -1,11 +1,11 @@
 import Pipe from './Pipe';
-
-var builtins = Object.create(null);
+import PipeError from './PipeError';
 
 export {
-    Pipe as Pipe
+    Pipe as Pipe,
+    PipeError as PipeError
 };
 
-export function createPipe(spec, builtins) {
-    return new Pipe(spec, builtins || Object.create(null));
+export function createPipe(spec) {
+    return new Pipe(spec);
 }

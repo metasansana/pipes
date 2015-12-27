@@ -14,6 +14,10 @@ var _Pipeline = require('./Pipeline');
 
 var _Pipeline2 = _interopRequireDefault(_Pipeline);
 
+var _PipeError = require('./PipeError');
+
+var _PipeError2 = _interopRequireDefault(_PipeError);
+
 /**
  * Flow represents the actual 'flowing' of the target object keys
  * into the various pipe lines.
@@ -34,7 +38,7 @@ var Flow = (function () {
         this._errors = Object.create(null);
         this._errorCount = 0;
         this._filtered = Object.create(null);
-        this._count = Object.keys(work).length;
+        this._count = 0;
     }
 
     /**
@@ -64,21 +68,22 @@ var Flow = (function () {
                 this._errorCount = this._errorCount + 1;
             }
 
-            if (key === '@after') return this._pipe.emit('done', this._errorCount === 0, value, this._errors, this._errorCount);
+            if (key === '@after') return this._pipe.emit('done', this._errorCount > 0 ? new _PipeError2['default'](this._errors, this._errorCount) : null, this._filtered);
 
             if (!err) this._filtered[key] = value;
-
+            console.log('sigh count ', this._count, this._work);
             this._count = this._count - 1;
 
             if (this._count === 0) {
-                if (this._after && this._errorCount === 0) _Pipeline2['default'].create('@after', this._filtered, this._after, this).run();else this._pipe.emit('done', this._errorCount === 0, this._filtered, this._errors, this._errorCount);
+                if (this._after && this._errorCount === 0) _Pipeline2['default'].create('@after', this._filtered, this._after, this).run();else this._pipe.emit('done', this._errorCount > 0 ? new _PipeError2['default'](this._errors, this._errorCount) : null, this._filtered);
             }
         }
     }, {
         key: 'run',
         value: function run() {
-            for (var key in this._work) if (Object.prototype.hasOwnProperty.call(this._work, key)) {
-                if (this._work[key] != null) _Pipeline2['default'].create(key, this._o[key] || null, this._work[key], this).run();
+            for (var key in this._work) if (Object.prototype.hasOwnProperty.call(this._work, key)) if (this._work[key] !== null) {
+                this._count = this._count + 1;
+                _Pipeline2['default'].create(key, this._o[key] || null, this._work[key], this).run();
             }
         }
     }]);

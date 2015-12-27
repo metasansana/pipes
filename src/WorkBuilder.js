@@ -16,14 +16,6 @@ class WorkBuilder {
         this.builtins = builtins;
     }
 
-    _isForArrays(key) {
-
-        if (key[0] === '[')
-            if (key[key.length - 1] === ']')
-                return true;
-        return false;
-    }
-
     _keys(spec) {
 
         var keys = Object.keys(spec);
@@ -54,12 +46,13 @@ class WorkBuilder {
 
             filter = line[i];
 
-            if (typeof filter === 'string')
+            if (typeof filter === 'string') {
+                if (!builtins[filter]) throw new Error(`Unknown filter '${filter}' detected!`);
                 line[i] = builtins[filter]
-            else if (Array.isArray(filter))
+            } else if (Array.isArray(filter)) {
                 if (typeof filter[0] === 'string')
                     filter[0] = builtins[filter[0]]
-
+            }
             return line;
 
         }

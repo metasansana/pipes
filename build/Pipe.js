@@ -6,6 +6,8 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
@@ -18,11 +20,27 @@ var _Flow = require('./Flow');
 
 var _Flow2 = _interopRequireDefault(_Flow);
 
+var _builtins = require('./builtins');
+
+var builtins = _interopRequireWildcard(_builtins);
+
+var combine = function combine(pipe, filters) {
+    for (var key in filters) pipe.addFilter(key, filters[key]);
+};
+
 /**
  * @typedef {object} Filters
  * @property {array} ['?']
  * @property {array} ['*']
  * @property {array} ['@after']
+ */
+
+/**
+ * @typedef {function} Filter
+ * @param {string} key The key of the property being filtered.
+ * @param {*} value The value of the property being filtered.
+ * @param {Pipeline} line The current pipeline being processed.
+ * @param {...*} args Various arguments passed to the filter by the spec
  */
 
 /**
@@ -57,25 +75,39 @@ var _Flow2 = _interopRequireDefault(_Flow);
  *             are no errors
  *
  * @param {Filters} spec 
- * @param {object} builtins 
  */
 
 var Pipe = (function () {
-    function Pipe(spec, builtins) {
+    function Pipe(spec) {
         _classCallCheck(this, Pipe);
 
         this._spec = spec;
-        this._builtins = builtins;
+        this._builtins = Object.create(null);
         this._events = Object.create(null);
+        combine(this, builtins);
     }
 
     /**
-     * on queues up a callback to be called when an event occurs
-     * @param {string} event 
-     * @param {function} cb 
+     * addFilter adds a filter, transform, validator etc to the list
+     * so it can be referenced by name.
+     * @param {string} key 
+     * @param {Filter} f 
+     * @returns {Pipe}
      */
 
     _createClass(Pipe, [{
+        key: 'addFilter',
+        value: function addFilter(key, f) {
+            this._builtins[key] = f;
+            return this;
+        }
+
+        /**
+         * on queues up a callback to be called when an event occurs
+         * @param {string} event 
+         * @param {function} cb 
+         */
+    }, {
         key: 'on',
         value: function on(event, cb) {
             this._events[event] = this._events[event] || [];

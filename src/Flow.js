@@ -1,4 +1,5 @@
 import Pipeline from './Pipeline';
+import PipeError from './PipeError';
 /**
  * Flow represents the actual 'flowing' of the target object keys
  * into the various pipe lines.
@@ -17,7 +18,7 @@ class Flow {
         this._errors = Object.create(null);
         this._errorCount = 0;
         this._filtered = Object.create(null);
-        this._count = Object.keys(work).length;
+        this._count = 0;
     }
 
     /**
@@ -42,31 +43,34 @@ class Flow {
             this._errorCount = this._errorCount + 1;
         }
 
-if (key === '@after')
-            return this._pipe.emit('done', (this._errorCount === 0),
-                value, this._errors, this._errorCount);
+        if (key === '@after')
+            return this._pipe.emit('done', (this._errorCount > 0) ?
+                new PipeError(this._errors, this._errorCount) : null,
+                this._filtered);
 
-if(!err)
+        if (!err)
             this._filtered[key] = value;
-
-                        this._count = this._count - 1;
+console.log('sigh count ' ,this._count, this._work);
+        this._count = this._count - 1;
 
         if (this._count === 0) {
             if (this._after && (this._errorCount === 0))
                 Pipeline.create('@after', this._filtered, this._after, this).run();
             else
-                this._pipe.emit('done', (this._errorCount === 0),
-                    this._filtered, this._errors, this._errorCount);
+                this._pipe.emit('done', (this._errorCount > 0) ?
+                    new PipeError(this._errors, this._errorCount) : null,
+                    this._filtered);
         }
 
     }
 
     run() {
         for (var key in this._work)
-            if (Object.prototype.hasOwnProperty.call(this._work, key)) {
-                if (this._work[key] != null)
+            if (Object.prototype.hasOwnProperty.call(this._work, key))
+                if (this._work[key] !== null) {
+                    this._count = this._count + 1;
                     Pipeline.create(key, this._o[key] || null, this._work[key], this).run();
-            }
+                }
     }
 }
 

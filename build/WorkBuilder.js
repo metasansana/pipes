@@ -28,13 +28,6 @@ var WorkBuilder = (function () {
     }
 
     _createClass(WorkBuilder, [{
-        key: '_isForArrays',
-        value: function _isForArrays(key) {
-
-            if (key[0] === '[') if (key[key.length - 1] === ']') return true;
-            return false;
-        }
-    }, {
         key: '_keys',
         value: function _keys(spec) {
 
@@ -68,8 +61,12 @@ var WorkBuilder = (function () {
 
                 filter = line[i];
 
-                if (typeof filter === 'string') line[i] = builtins[filter];else if (Array.isArray(filter)) if (typeof filter[0] === 'string') filter[0] = builtins[filter[0]];
-
+                if (typeof filter === 'string') {
+                    if (!builtins[filter]) throw new Error('Unknown filter \'' + filter + '\' detected!');
+                    line[i] = builtins[filter];
+                } else if (Array.isArray(filter)) {
+                    if (typeof filter[0] === 'string') filter[0] = builtins[filter[0]];
+                }
                 return line;
             }
         }

@@ -1,11 +1,25 @@
 import WorkBuilder from './WorkBuilder';
 import Flow from './Flow';
+import * as builtins from './builtins';
+
+var combine = (pipe, filters) => {
+    for (var key in filters)
+        pipe.addFilter(key, filters[key]);
+};
 
 /**
  * @typedef {object} Filters
  * @property {array} ['?']
  * @property {array} ['*']
  * @property {array} ['@after']
+ */
+
+/**
+ * @typedef {function} Filter
+ * @param {string} key The key of the property being filtered.
+ * @param {*} value The value of the property being filtered.
+ * @param {Pipeline} line The current pipeline being processed.
+ * @param {...*} args Various arguments passed to the filter by the spec
  */
 
 /**
@@ -40,14 +54,26 @@ import Flow from './Flow';
  *             are no errors
  *
  * @param {Filters} spec 
- * @param {object} builtins 
  */
 class Pipe {
 
-    constructor(spec, builtins) {
+    constructor(spec) {
         this._spec = spec;
-        this._builtins = builtins;
+        this._builtins = Object.create(null);
         this._events = Object.create(null);
+        combine(this, builtins);
+    }
+
+    /**
+     * addFilter adds a filter, transform, validator etc to the list
+     * so it can be referenced by name.
+     * @param {string} key 
+     * @param {Filter} f 
+     * @returns {Pipe}
+     */
+    addFilter(key, f) {
+        this._builtins[key] = f;
+        return this;
     }
 
     /**
@@ -68,7 +94,6 @@ class Pipe {
      * @param {...*} args
      */
     emit(evt) {
-
         if (Array.isArray(this._events[evt]))
             this._events[evt].slice().forEach(f => f.apply(null,
                 Array.prototype.splice.call(arguments, 1)));

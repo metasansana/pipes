@@ -1,10 +1,11 @@
 import must from 'must';
 import Pipe from '../src/Pipe';
+import PipeError from '../src/PipeError';
 
 var pipe;
 var spec;
 
-function set(key, value, change, line) {
+function set(key, value, line, change) {
     line.next(null, key, change);
 }
 
@@ -12,7 +13,7 @@ function pipeit(key, value, line) {
     line.next(null, key, value);
 }
 
-function inc(key, value, i, line) {
+function inc(key, value, line, i) {
     line.next(null, key, value + i);
 }
 
@@ -20,7 +21,7 @@ function upper(key, value, line) {
     line.next(null, key, value.toUpperCase());
 }
 
-function error(key, value, msg, line) {
+function error(key, value, line, msg) {
     line.next(new Error(msg), key, value);
 }
 
@@ -58,8 +59,8 @@ describe('Pipe', function() {
                 name: 'hera',
                 count: 6,
                 status: true
-            }, function(ok, filtered, errors) {
-                must(ok).be.true();
+            }, function(err, filtered, errors) {
+                must(err).be.null();
                 must(filtered).eql({
                     name: 'HERA',
                     count: 16,
@@ -95,9 +96,9 @@ describe('Pipe', function() {
                     name: 'hera',
                     count: [1, 2, 3],
                     status: true
-                }, function(ok, filtered, errors) {
-                    must(ok).be.false();
-                    must(errors).eql({
+                }, function(err, filtered) {
+                    must(err instanceof PipeError).be.true();
+                    must(err.errors).eql({
                         count: 'Some message'
                     });
                     done();
@@ -122,8 +123,8 @@ describe('Pipe', function() {
 
             pipe.run({
                 count: 1
-            }, function(ok, filtered, errors) {
-                must(ok).be.false();
+            }, function(err, filtered) {
+                must(err instanceof PipeError).be.true();
                 must(filtered).eql({});
                 done();
             });
@@ -145,8 +146,8 @@ describe('Pipe', function() {
 
             pipe.run({
                 count: 1
-            }, function(ok, filtered, errors) {
-                must(ok).be.true();
+            }, function(err, filtered) {
+                must(err).be.null();
                 must(filtered).eql({
                     id: 100,
                     count: 1

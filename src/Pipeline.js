@@ -47,9 +47,9 @@ class Pipeline {
             f = tmp;
         }
 
+        args.unshift(this);
         args.unshift(value);
         args.unshift(key);
-        args.push(this);
         f.apply(null, args);
 
     }
