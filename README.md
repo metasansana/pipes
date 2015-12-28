@@ -26,10 +26,12 @@ var spec = {
 };
 
 var pipe = pipes.create(spec);
-pipe.run({name:'Lasana', age:78}, function(ok, transformed, errors) {
+pipe.run({name:'Lasana', age:78}, function(err, transformed) {
 
-  if(ok)
-    console.log(transformed);
+  if(err)
+    console.log(err.errors);
+
+  console.log(transformed);
 
 });
 
@@ -71,17 +73,17 @@ examples:
 
 A transform, validator, filter in a pipeline has the following signature:
 
-`function(key, value, flow, arg1..argn)`
+`function(key, value, line, arg1..argn)`
 
 Where `arg1..argn` represents any arguments declared in the spec.
 
-`flow` refers to an instance of the `Flow` class which coordinates the
-flow or key value pairs through the pipeline.
+`line` refers to an instance of the `Pipeline` class which coordinates the
+filtering of a key value pair.
 
-Each filter in the pipeline is executed one 
-by one and MUST call `flow.next()` when finished, in order for the pipeline to keep running.
+Each filter in the pipeline is executed one by one and MUST call
+`line.next()` when finished, in order for the pipeline to keep running.
 
-`flow.next()` is defined as:
+`line.next()` is defined as:
 
 ```javascript
 
@@ -90,16 +92,14 @@ by one and MUST call `flow.next()` when finished, in order for the pipeline to k
 @param {string} key     The key of the property that has finished, 
                         this gives you a chance to format the key name.
 @param {*} value        The value you want the key to have
-Flow.prototype.next = function(err, key, value) {
+Pipeline.prototype.next = function(err, key, value) {
 
 }
 ```
 ###Builtins
 
-This package ships with no builtins, you either have to
-define your own or use the `metasansana/pipes-builtins` specified 
-there. I was tempted to simply include one of the string manipulation
-libraries at least but most of them were to general.
+This package ships with  ~~ no builtins ~~ a few builtins (see `src/builtins/index.js`). 
+Use `pipe.addFilter(name, filter)` to add custom filters.
 
 ###License
 
