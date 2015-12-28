@@ -12,15 +12,5 @@ class PipeError extends Error {
         this.errors = errors;
         this.count = count;
     }
-
-    getErrors() {
-
-        var o = Object.create(null);
-        Object.keys(this.errors).
-        forEach(k => o[k] = this.errors[k].message);
-        return o;
-
-    }
-
 }
 export default PipeError

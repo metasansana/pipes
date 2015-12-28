@@ -48,62 +48,82 @@ describe('Pipe', function() {
                     [pipeit],
                     [pipeit],
                     [set, 'my status']
-                ]
-
+                ],
+                nested: {
+                    bluebird: [pipeit],
+                    pinkbird: [pipeit],
+                    branch: {
+                        complex: [pipeit]
+                    }
+                }
 
             };
 
-            pipe = new Pipe(spec, []);
+            pipe = new Pipe(spec);
 
             pipe.run({
                 name: 'hera',
                 count: 6,
-                status: true
-            }, function(err, filtered, errors) {
+                status: true,
+                nested: {
+                    bluebird: 'present',
+                    pinkbird: 'present',
+                    branch: {
+                        complex: 'present'
+                    }
+                }
+            }, function(err, filtered) {
                 must(err).be.null();
                 must(filtered).eql({
                     name: 'HERA',
                     count: 16,
-                    status: 'my status'
+                    status: 'my status',
+                    nested: {
+                        bluebird: 'present',
+                        pinkbird: 'present',
+                        branch: {
+                            complex: 'present'
+                        }
+                    }
                 });
                 done();
             });
 
         });
 
-        if ('should obey errors', function(done) {
+        it('should obey errors', function(done) {
 
-                spec = {
-                    name: [
-                        [upper]
-                    ],
-                    count: [
-                        [pipeit],
-                        [error, 'Some message'],
-                        [inc, 10]
-                    ],
-                    status: [
-                        [pipeit],
-                        [pipeit],
-                        [set, 'my status']
-                    ]
+            spec = {
+                name: [
+                    [upper]
+                ],
+                count: [
+                    [pipeit],
+                    [error, 'Some message'],
+                    [inc, 10]
+                ],
+                status: [
+                    [pipeit],
+                    [pipeit],
+                    [set, 'my status']
+                ]
 
-                };
+            };
 
-                pipe = new Pipe(spec, []);
+            pipe = new Pipe(spec);
 
-                pipe.run({
-                    name: 'hera',
-                    count: [1, 2, 3],
-                    status: true
-                }, function(err, filtered) {
-                    must(err instanceof PipeError).be.true();
-                    must(err.errors).eql({
-                        count: 'Some message'
-                    });
-                    done();
+            pipe.run({
+                name: 'hera',
+                count: [1, 2, 3],
+                status: true
+            }, function(err, filtered) {
+                must(err instanceof PipeError).be.true();
+                must(err.errors).eql({
+                    count: 'Some message'
                 });
+                done();
             });
+        });
 
         it('should not run @after if things are not ok', function(done) {
 
@@ -119,7 +139,7 @@ describe('Pipe', function() {
 
             };
 
-            var pipe = new Pipe(spec, []);
+            var pipe = new Pipe(spec);
 
             pipe.run({
                 count: 1
@@ -139,10 +159,9 @@ describe('Pipe', function() {
                 '@after': [
                     [id]
                 ]
-
             };
 
-            var pipe = new Pipe(spec, []);
+            var pipe = new Pipe(spec);
 
             pipe.run({
                 count: 1

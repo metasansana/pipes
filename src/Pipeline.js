@@ -1,17 +1,27 @@
+import * as events from 'events';
 /**
  * Pipeline processes a sequence of filters one by one
  * @param {string} key 
  * @param {*} value 
- * @param {Flow} flow The Flow that created this Pipeline
  * @param {array} work An array of filters to pass the key value through
  */
 class Pipeline {
 
-    constructor(key, value, work, flow) {
+    constructor(key, value, work) {
         this.key = key;
         this.value = value;
         this._work = work;
-        this._flow = flow;
+        this._events = new events.EventEmitter();
+    }
+
+    on() {
+        this._events.on.apply(this._events, arguments);
+        return this;
+    }
+
+    once() {
+        this._events.once.apply(this._events, arguments);
+        return this;
     }
 
     /**
@@ -33,10 +43,10 @@ class Pipeline {
         var args = [];
 
         if (err)
-            return this._flow.finished(err, key, value);
+            return this._events.emit('error', err, key, value);
 
         if (this._work.length === 0)
-            return this._flow.finished(null, key, value);
+            return this._events.emit('success', key, value);
 
         tmp = this._work.shift();
 
@@ -58,6 +68,7 @@ class Pipeline {
      * run this pipeline
      */
     run() {
+        this._events.emit('start');
         this.next(null, this.key, this.value);
     }
 

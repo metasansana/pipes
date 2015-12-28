@@ -71,7 +71,7 @@ var Flow = (function () {
             if (key === '@after') return this._pipe.emit('done', this._errorCount > 0 ? new _PipeError2['default'](this._errors, this._errorCount) : null, this._filtered);
 
             if (!err) this._filtered[key] = value;
-            console.log('sigh count ', this._count, this._work);
+
             this._count = this._count - 1;
 
             if (this._count === 0) {

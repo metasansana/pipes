@@ -114,6 +114,6 @@ var WorkBuilder = (function () {
     return WorkBuilder;
 })();
 
-WorkBuilder.KEYWORDS = ['@after', '?', '*'];
+WorkBuilder.KEYWORDS = ['@after', '?', '*', '!'];
 exports['default'] = WorkBuilder;
 module.exports = exports['default'];
