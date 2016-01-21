@@ -1,9 +1,13 @@
-var passthrough = (key, value, line) => {
+var passthrough = [(key, value, line) => {
     line.next(null, key, value);
-};
-var invalid = (key, value, line) => {
+}];
+var reject = [(key, value, line) => {
+    line.next(null, key, null);
+}];
+var invalid = [(key, value, line) => {
     line.next(new Error(`${key} is invalid!`));
-};
+}];
+var slice = a => Array.isArray(a) ? a.slice() : a;
 /**
  * Specification wraps around the user supplied spec to
  * make handling it easier.
@@ -50,21 +54,23 @@ class Specification {
         line = (typeof line === 'string') ? [line] : line;
 
         for (var i = 0; i < line.length; i++) {
-
             filter = line[i];
             if (typeof filter === 'function') {
                 return line;
             } else if (this.builtins[filter]) {
-                line[i] = this.builtins[filter]
+                line[i] = this.builtins[filter];
             } else if (Array.isArray(filter)) {
-                if (typeof filter[0] === 'string')
+                if (typeof filter[0] === 'string') {
+                    if (!this.builtins[filter[0]])
+                        throw new Error(`${filter[0]} is not a known filter!`);
                     filter[0] = this.builtins[filter[0]]
+                }
             } else {
                 throw new Error(`Invalid filter supplied '${filter}' at key '${key}'!`);
             }
-
-            return line;
         }
+
+        return line;
     }
 
     /**
@@ -80,7 +86,7 @@ class Specification {
         } else {
 
             if (this.spec[key]) {
-                work.push.apply(work, this.spec[key]);
+                work.push.apply(work, slice(this.spec[key]));
             } else {
                 work.push.apply(work, this.unknown());
             }
@@ -90,7 +96,6 @@ class Specification {
             if (work.length === 0)
                 work = null;
         }
-
         return this._substitute(work, this.builtins, key);
 
     }
@@ -101,7 +106,7 @@ class Specification {
      */
     unknown() {
         if (Array.isArray(this.spec['?'])) return this.spec['?'];
-        return [passthrough];
+        return reject;
     }
 
     /**
@@ -109,7 +114,7 @@ class Specification {
      */
     all() {
         if (Array.isArray(this.spec['*'])) return this.spec['*'];
-        return [passthrough];
+        return passthrough;
     }
 
     /**
@@ -117,7 +122,7 @@ class Specification {
      */
     after() {
         if (Array.isArray(this.spec['@after'])) return this.spec['@after'];
-        return [passthrough];
+        return passthrough;
     }
 
     /**
@@ -129,7 +134,7 @@ class Specification {
     }
 
     /**
-     * keys returns an array of all the keys to that will be passed
+     * keys returns an array of all the keys that will be passed
      * through the filters.
      * @returns {array}
      */

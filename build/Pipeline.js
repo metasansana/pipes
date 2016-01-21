@@ -6,29 +6,35 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj['default'] = obj; return newObj; } }
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 var _events = require('events');
 
-var events = _interopRequireWildcard(_events);
+var _events2 = _interopRequireDefault(_events);
+
+var _Pipe = require('./Pipe');
+
+var _Pipe2 = _interopRequireDefault(_Pipe);
 
 /**
  * Pipeline processes a sequence of filters one by one
  * @param {string} key 
  * @param {*} value 
  * @param {array} work An array of filters to pass the key value through
+ * @param {object} builtins 
  */
 
 var Pipeline = (function () {
-    function Pipeline(key, value, work) {
+    function Pipeline(key, value, work, builtins) {
         _classCallCheck(this, Pipeline);
 
         this.key = key;
         this.value = value;
+        this.builtins = builtins;
         this._work = work;
-        this._events = new events.EventEmitter();
+        this._events = new _events2['default'].EventEmitter();
     }
 
     _createClass(Pipeline, [{
@@ -69,14 +75,13 @@ var Pipeline = (function () {
             if (this._work.length === 0) return this._events.emit('success', key, value);
 
             tmp = this._work.shift();
-
             if (Array.isArray(tmp)) {
+                tmp = tmp.slice();
                 f = tmp.shift();
-                args = tmp;
+                args = tmp.slice();
             } else {
                 f = tmp;
             }
-
             args.unshift(this);
             args.unshift(value);
             args.unshift(key);

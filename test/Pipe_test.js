@@ -45,9 +45,7 @@ describe('Pipe', function() {
                     [inc, 10]
                 ],
                 status: [
-                    [pipeit],
-                    [pipeit],
-                    [set, 'my status']
+                    pipeit, pipeit, [set, 'my status']
                 ],
                 nested: {
                     bluebird: [pipeit],

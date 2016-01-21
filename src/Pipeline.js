@@ -1,15 +1,19 @@
-import * as events from 'events';
+import events from 'events';
+import Pipe from './Pipe';
+
 /**
  * Pipeline processes a sequence of filters one by one
  * @param {string} key 
  * @param {*} value 
  * @param {array} work An array of filters to pass the key value through
+ * @param {object} builtins 
  */
 class Pipeline {
 
-    constructor(key, value, work) {
+    constructor(key, value, work, builtins) {
         this.key = key;
         this.value = value;
+        this.builtins = builtins;
         this._work = work;
         this._events = new events.EventEmitter();
     }
@@ -49,14 +53,13 @@ class Pipeline {
             return this._events.emit('success', key, value);
 
         tmp = this._work.shift();
-
         if (Array.isArray(tmp)) {
+            tmp = tmp.slice();
             f = tmp.shift();
-            args = tmp;
+            args = tmp.slice();
         } else {
             f = tmp;
         }
-
         args.unshift(this);
         args.unshift(value);
         args.unshift(key);

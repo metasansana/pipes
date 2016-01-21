@@ -22,7 +22,7 @@ class PipingFactory {
     create(key, value, specLine) {
 
         var line;
-        console.log('your args ', key, value, specLine, '\n\n\n\n');
+
         if ((typeof specLine === 'object') && (!Array.isArray(specLine))) {
             line = new Pipe(specLine, this._spec.builtins);
             return line.
@@ -31,7 +31,7 @@ class PipingFactory {
             run(value, function() {});
         }
 
-        line = new Pipeline(key, value, this._spec.get(key));
+        line = new Pipeline(key, value, this._spec.get(key), this._spec.builtins);
 
         return line.
         on('error', this._manager.error.bind(this._manager)).

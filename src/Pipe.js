@@ -1,7 +1,7 @@
 import FlowManager from './FlowManager';
 import Specification from './Specification';
 import * as builtins from './builtins';
-import * as events from 'events';
+import events from 'events';
 
 var combine = (pipe, filters) => {
     for (var key in filters)
@@ -31,11 +31,15 @@ var combine = (pipe, filters) => {
 class Pipe {
 
     constructor(spec, passedBuiltins) {
+
         this._spec = spec;
-        this._builtins = passedBuiltins || Object.create(null);
+        this._builtins = Object.create(null);
         this._events = new events.EventEmitter();
-        if (!passedBuiltins)
-            combine(this, builtins)
+
+        combine(this, builtins);
+        if (passedBuiltins)
+            combine(this, passedBuiltins)
+
     }
 
     on() {
@@ -64,7 +68,6 @@ class Pipe {
      * run starts the pipe lines based on the internal spec
      */
     run(o, cb) {
-
         var manager = new FlowManager(new Specification(this._spec, o, this._builtins), this._events);
         this.once('error', (err, o) => cb(err, o));
         this.once('success', o => cb(null, o));

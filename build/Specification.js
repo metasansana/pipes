@@ -8,11 +8,17 @@ var _createClass = (function () { function defineProperties(target, props) { for
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var passthrough = function passthrough(key, value, line) {
+var passthrough = [function (key, value, line) {
     line.next(null, key, value);
-};
-var invalid = function invalid(key, value, line) {
+}];
+var reject = [function (key, value, line) {
+    line.next(null, key, null);
+}];
+var invalid = [function (key, value, line) {
     line.next(new Error(key + ' is invalid!'));
+}];
+var slice = function slice(a) {
+    return Array.isArray(a) ? a.slice() : a;
 };
 /**
  * Specification wraps around the user supplied spec to
@@ -64,20 +70,22 @@ var Specification = (function () {
             line = typeof line === 'string' ? [line] : line;
 
             for (var i = 0; i < line.length; i++) {
-
                 filter = line[i];
                 if (typeof filter === 'function') {
                     return line;
                 } else if (this.builtins[filter]) {
                     line[i] = this.builtins[filter];
                 } else if (Array.isArray(filter)) {
-                    if (typeof filter[0] === 'string') filter[0] = this.builtins[filter[0]];
+                    if (typeof filter[0] === 'string') {
+                        if (!this.builtins[filter[0]]) throw new Error(filter[0] + ' is not a known filter!');
+                        filter[0] = this.builtins[filter[0]];
+                    }
                 } else {
                     throw new Error('Invalid filter supplied \'' + filter + '\' at key \'' + key + '\'!');
                 }
-
-                return line;
             }
+
+            return line;
         }
 
         /**
@@ -95,7 +103,7 @@ var Specification = (function () {
             } else {
 
                 if (this.spec[key]) {
-                    work.push.apply(work, this.spec[key]);
+                    work.push.apply(work, slice(this.spec[key]));
                 } else {
                     work.push.apply(work, this.unknown());
                 }
@@ -104,7 +112,6 @@ var Specification = (function () {
 
                 if (work.length === 0) work = null;
             }
-
             return this._substitute(work, this.builtins, key);
         }
 
@@ -116,7 +123,7 @@ var Specification = (function () {
         key: 'unknown',
         value: function unknown() {
             if (Array.isArray(this.spec['?'])) return this.spec['?'];
-            return [passthrough];
+            return reject;
         }
 
         /**
@@ -126,7 +133,7 @@ var Specification = (function () {
         key: 'all',
         value: function all() {
             if (Array.isArray(this.spec['*'])) return this.spec['*'];
-            return [passthrough];
+            return passthrough;
         }
 
         /**
@@ -136,7 +143,7 @@ var Specification = (function () {
         key: 'after',
         value: function after() {
             if (Array.isArray(this.spec['@after'])) return this.spec['@after'];
-            return [passthrough];
+            return passthrough;
         }
 
         /**
@@ -150,7 +157,7 @@ var Specification = (function () {
         }
 
         /**
-         * keys returns an array of all the keys to that will be passed
+         * keys returns an array of all the keys that will be passed
          * through the filters.
          * @returns {array}
          */

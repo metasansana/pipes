@@ -26,7 +26,7 @@ var builtins = _interopRequireWildcard(_builtins);
 
 var _events = require('events');
 
-var events = _interopRequireWildcard(_events);
+var _events2 = _interopRequireDefault(_events);
 
 var combine = function combine(pipe, filters) {
     for (var key in filters) pipe.addFilter(key, filters[key]);
@@ -58,9 +58,11 @@ var Pipe = (function () {
         _classCallCheck(this, Pipe);
 
         this._spec = spec;
-        this._builtins = passedBuiltins || Object.create(null);
-        this._events = new events.EventEmitter();
-        if (!passedBuiltins) combine(this, builtins);
+        this._builtins = Object.create(null);
+        this._events = new _events2['default'].EventEmitter();
+
+        combine(this, builtins);
+        if (passedBuiltins) combine(this, passedBuiltins);
     }
 
     _createClass(Pipe, [{
@@ -96,7 +98,6 @@ var Pipe = (function () {
     }, {
         key: 'run',
         value: function run(o, cb) {
-
             var manager = new _FlowManager2['default'](new _Specification2['default'](this._spec, o, this._builtins), this._events);
             this.once('error', function (err, o) {
                 return cb(err, o);

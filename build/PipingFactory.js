@@ -46,7 +46,7 @@ var PipingFactory = (function () {
             var _this = this;
 
             var line;
-            console.log('your args ', key, value, specLine, '\n\n\n\n');
+
             if (typeof specLine === 'object' && !Array.isArray(specLine)) {
                 line = new _Pipe2['default'](specLine, this._spec.builtins);
                 return line.on('error', function (err, value) {
@@ -56,7 +56,7 @@ var PipingFactory = (function () {
                 }).run(value, function () {});
             }
 
-            line = new _Pipeline2['default'](key, value, this._spec.get(key));
+            line = new _Pipeline2['default'](key, value, this._spec.get(key), this._spec.builtins);
 
             return line.on('error', this._manager.error.bind(this._manager)).on('success', this._manager.success.bind(this._manager)).run();
         }

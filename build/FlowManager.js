@@ -52,7 +52,6 @@ var FlowManager = (function () {
     _createClass(FlowManager, [{
         key: 'error',
         value: function error(err, key, value) {
-
             this._count = this._count - 1;
             this._errors[key] = err.message;
             this._errorCount = this._errorCount + 1;
@@ -67,8 +66,11 @@ var FlowManager = (function () {
     }, {
         key: 'success',
         value: function success(key, value) {
+
             this._count = this._count - 1;
-            this._filtered[key] = value;
+
+            if (value !== null) this._filtered[key] = value;
+
             this.finish();
         }
 

@@ -1,5 +1,6 @@
 import must from 'must';
 import Pipe from '../src/Pipe';
+import PipeError from '../src/PipeError';
 
 var pipe
 
@@ -9,18 +10,19 @@ function x(key, value, line, m) {
 
 describe('Validation builtin', function() {
 
-    describe('required', function() {
+    describe('$required', function() {
 
         it('should give an error if the property was not supplied', function(done) {
 
             pipe = new Pipe({
-                id: ['required']
+                id: ['$required', '$required', '$required']
             });
 
             pipe.run({
                 _id: 'mongojumbo'
             }, function(err, o) {
-                must(err.errors.id.message).equal('id is required!');
+                must(err).not.be.null();
+                must(err.errors.id).equal('id is required!');
                 done();
             });
 
@@ -29,19 +31,52 @@ describe('Validation builtin', function() {
     });
 
     describe('$array', function() {
-        it('should recurse', function(done) {
+        xit('requires an array', function(done) {
 
             pipe = new Pipe({
-                spread: ['$array', [x, 1],
-                    [x, 2],
-                    [x, 3]
+                spread: ['$array']
+            });
+
+            pipe.run({
+                spread: 2,
+            }, function(err, o) {
+                must(err instanceof PipeError).be.true();
+                done();
+            });
+        });
+    });
+
+    describe('$repeat', function() {
+        it('should repeat', function(done) {
+
+            pipe = new Pipe({
+                multiply: [
+
+                    ['$repeat', {
+                        b: [
+                            [x, 10]
+                        ]
+                    }]
+
                 ]
             });
 
             pipe.run({
-                spread: [2,2,2],
+                multiply: [{
+                    b: 1
+                }, {
+                    b: 1
+                }, {
+                    b: 2
+                }]
             }, function(err, o) {
-              must(o.spread).eql([2,4,6]);
+                must(o.multiply).eql([{
+                    b: 10
+                }, {
+                    b: 10
+                }, {
+                    b: 20
+                }]);
                 done();
             });
 
