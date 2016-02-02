@@ -6,6 +6,7 @@ Object.defineProperty(exports, '__esModule', {
 exports.$required = $required;
 exports.$array = $array;
 exports.$repeat = $repeat;
+exports.$set = $set;
 function t(template, data) {
     return template.replace(/\{([\w\.\-]*)\}/g, function (s, k) {
         return k.split('.').reduce(function (val, i) {
@@ -19,7 +20,8 @@ function t(template, data) {
 function $required(key, value, line, msg) {
 
     if (!value) return line.next(new Error(t(msg || '{key} is required!', {
-        key: key, value: value
+        key: key,
+        value: value
     })), key, value);
 
     line.next(null, key, value);
@@ -28,7 +30,8 @@ function $required(key, value, line, msg) {
 function $array(key, value, line, msg) {
 
     if (!Array.isArray(value)) return line.next(new Error(t(msg || '{key} must be an array!', {
-        key: key, value: value
+        key: key,
+        value: value
     })), key, value);
 
     line.next(null, key, value);
@@ -60,4 +63,9 @@ function $repeat(key, value, line, spec) {
     };
 
     f(pipe, line, key, value, newValues);
+}
+
+function $set(key, oldValue, line, newValue) {
+
+    line.next(null, key, newValue);
 }

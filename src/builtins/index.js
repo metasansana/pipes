@@ -11,7 +11,8 @@ export function $required(key, value, line, msg) {
 
     if (!value)
         return line.next(new Error(t(msg || '{key} is required!', {
-            key, value
+            key,
+            value
         })), key, value);
 
     line.next(null, key, value);
@@ -22,7 +23,8 @@ export function $array(key, value, line, msg) {
     if (!Array.isArray(value))
         return line.next(
             new Error(t(msg || '{key} must be an array!', {
-                key, value
+                key,
+                value
             })), key, value);
 
     line.next(null, key, value);
@@ -57,5 +59,11 @@ export function $repeat(key, value, line, spec) {
     };
 
     f(pipe, line, key, value, newValues);
+
+}
+
+export function $set(key, oldValue, line, newValue) {
+
+    line.next(null, key, newValue);
 
 }
