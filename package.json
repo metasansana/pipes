@@ -1,24 +1,26 @@
 {
-    "name": "pipe-transform",
-    "version": "0.0.1",
-    "description": "Transform an object by sending it down some pipes.",
-    "main": "index.js",
-    "files": ["build"],
-    "repository": "https://github.com/metasansana/pipes.git",
-    "scripts": {
-        "test": "./node_modules/.bin/mocha --opts mocha.opts test",
-        "postinstall": "cp -R ./build/* .; rm -R build",
-        "build": "./node_modules/.bin/babel -D src -d build"
-    },
-    "keywords": [
-        "transform",
-        "pipes"
-    ],
-    "author": "Lasana Murray <lmurray@quenk.com> (http://quenk.com)",
-    "license": "Apache-2.0",
-    "devDependencies": {
-        "babel": "^5.8.34",
-        "mocha": "^2.3.4",
-        "must": "^0.13.1"
-    }
+  "name": "pipe-transform",
+  "version": "0.0.2",
+  "description": "Transform an object by sending it down some pipes.",
+  "main": "index.js",
+  "files": [
+    "build"
+  ],
+  "repository": "https://github.com/metasansana/pipes.git",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --opts mocha.opts test",
+    "postinstall": "cp -R ./build/* .; rm -R build",
+    "build": "./node_modules/.bin/babel -D src -d build"
+  },
+  "keywords": [
+    "transform",
+    "pipes"
+  ],
+  "author": "Lasana Murray <lmurray@quenk.com> (http://quenk.com)",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "babel": "^5.8.34",
+    "mocha": "^2.3.4",
+    "must": "^0.13.1"
+  }
 }
