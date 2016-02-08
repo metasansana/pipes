@@ -28,7 +28,7 @@ var spec = {
     '@after':['timestamp']
 };
 
-var pipe = pipes.create(spec);
+var pipe = pipes(spec);
 
 pipe.run({name:'Lasana', age:78},
 (err, transformed)=> (err)? console.log(err.errors) : console.log(transformed));
