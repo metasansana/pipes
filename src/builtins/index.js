@@ -123,3 +123,14 @@ export function $set(key, oldValue, line, newValue) {
     line.next(null, key, newValue);
 
 }
+
+/**
+ * $keep keeps a key on the object
+ * @param {string} key 
+ * @param {*} value 
+ * @param {Pipeline} line 
+ */
+export function $keep(key, value, line) {
+  return line.next(null, key, value);
+}
+

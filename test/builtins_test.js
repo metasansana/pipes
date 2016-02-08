@@ -114,4 +114,21 @@ describe('Validation builtin', function() {
         });
     });
 
+    describe('$keep', function() {
+
+        it('should keep', function(done) {
+
+            pipe = new Pipe({
+                baby: ['$keep']
+            });
+
+            pipe.run({
+                baby: 'Kareem'
+            }, function(err, o) {
+                must(o.baby).be('Kareem');
+                done();
+            });
+
+        });
+    });
 });
