@@ -8,6 +8,7 @@ exports.$array = $array;
 exports.$cast = $cast;
 exports.$repeat = $repeat;
 exports.$set = $set;
+exports.$keep = $keep;
 function t(template, data) {
     return template.replace(/\{([\w\.\-]*)\}/g, function (s, k) {
         return k.split('.').reduce(function (val, i) {
@@ -118,4 +119,15 @@ function $repeat(key, value, line, spec) {
 function $set(key, oldValue, line, newValue) {
 
     line.next(null, key, newValue);
+}
+
+/**
+ * $keep keeps a key on the object
+ * @param {string} key 
+ * @param {*} value 
+ * @param {Pipeline} line 
+ */
+
+function $keep(key, value, line) {
+    return line.next(null, key, value);
 }
