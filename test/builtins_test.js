@@ -31,7 +31,7 @@ describe('Validation builtin', function() {
     });
 
     describe('$array', function() {
-        xit('requires an array', function(done) {
+        it('requires an array', function(done) {
 
             pipe = new Pipe({
                 spread: ['$array']
@@ -84,6 +84,34 @@ describe('Validation builtin', function() {
         });
     });
 
+    describe('$cast', function() {
 
+        it('should cast', function(done) {
+
+            pipe = new Pipe({
+                string: [
+                    ['$cast', 'string']
+                ],
+                number: [
+                    ['$cast', 'number']
+                ],
+                array: [
+                    ['$cast', 'array']
+                ]
+            });
+
+            pipe.run({
+                string: 1,
+                number: '1',
+                array: 'one,2,three'
+            }, function(err, o) {
+                must(o.string).be('1');
+                must(o.number).be(1);
+                must(o.array).eql(['one', '2', 'three']);
+                done();
+            });
+
+        });
+    });
 
 });
