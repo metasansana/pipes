@@ -99,7 +99,7 @@ Pipeline.prototype.next = function(err, key, value) {
 ###Builtins
 
 This package ships with  ~~ no builtins ~~ a few builtins (see `src/builtins/index.js`). 
-Use `pipe.addFilter(name, filter)` to add custom filters.
+Use `Pipe#addFilter(name, filter)` to add custom filters.
 
 ###License
 

@@ -1,11 +1,12 @@
 {
-    "name": "pipes",
-    "version": "0.0.1",
+    "name": "pipe-transform",
+    "version": "0.0.0",
     "description": "Transform an object by sending it down some pipes.",
-    "main": "build/index.js",
+    "main": "index.js",
     "files": "build",
     "scripts": {
         "test": "./node_modules/.bin/mocha --opts mocha.opts test",
+        "postinstall": "cp -R ./build/* .; rm -R build",
         "build": "./node_modules/.bin/babel -D src -d build"
     },
     "keywords": [
