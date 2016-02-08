@@ -5,6 +5,7 @@ Object.defineProperty(exports, '__esModule', {
 });
 exports.$required = $required;
 exports.$array = $array;
+exports.$cast = $cast;
 exports.$repeat = $repeat;
 exports.$set = $set;
 function t(template, data) {
@@ -33,6 +34,55 @@ function $array(key, value, line, msg) {
         key: key,
         value: value
     })), key, value);
+
+    line.next(null, key, value);
+}
+
+/**
+ * $cast will cast a value to the required type
+ * Currently deals with string, number and array.
+ * @todo object support
+ * @param {string} key
+ * @param {*} value 
+ * @param {Pipeline} line 
+ * @param {string} [type='string']
+ * @param {string} [marker=','] Used when casting to array
+ * @param {string} [message] 
+ */
+
+function $cast(key, value, line, type, marker, message) {
+
+    type = type || 'string';
+    marker = marker || ',';
+    message = message || 'Could not turn {key} to {type}!';
+
+    switch (type) {
+
+        case 'string':
+            value = String(value);
+            break;
+
+        case 'number':
+            value = Number(value);
+            break;
+
+        case 'array':
+
+            if (Array.isArray(value)) value = value;else if (typeof value === 'string') value = value.split(marker);else value = [value];
+
+            break;
+
+        default:
+            value = String(value);
+            break;
+
+    }
+
+    if (value === null) return line.next(new Error(t(message, {
+        key: key,
+        value: value,
+        type: type
+    })));
 
     line.next(null, key, value);
 }
