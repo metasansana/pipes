@@ -1,6 +1,6 @@
 {
   "name": "pipe-transform",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Transform an object by sending it down some pipes.",
   "main": "index.js",
   "files": [
