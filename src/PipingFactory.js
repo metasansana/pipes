@@ -17,9 +17,10 @@ class PipingFactory {
      * @param {string} key 
      * @param {*} value 
      * @param {array|object|string} specLine
+     * @param {object} [$this]
      * @returns {Piping} 
      */
-    create(key, value, specLine) {
+    create(key, value, specLine, $this) {
 
         var line;
 
@@ -28,10 +29,11 @@ class PipingFactory {
             return line.
             on('error', (err, value) => this._manager.error(err, key, value)).
             on('success', (value) => this._manager.success(key, value)).
-            run(value, function() {});
+            run(value, function() {}, $this);
         }
 
-        line = new Pipeline(key, value, this._spec.get(key), this._spec.builtins);
+        line = new Pipeline(key, value, 
+            this._spec.get(key), this._spec.builtins, $this);
 
         return line.
         on('error', this._manager.error.bind(this._manager)).

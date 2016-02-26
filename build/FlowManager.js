@@ -96,14 +96,14 @@ var FlowManager = (function () {
         }
     }, {
         key: 'run',
-        value: function run(o) {
+        value: function run(o, $this) {
             var _this2 = this;
 
             var factory = new _PipingFactory2['default'](this, this._spec);
             var runs = this._spec.keys();
             this._count = runs.length;
             runs.forEach(function (k) {
-                return factory.create(k, o[k], _this2._spec.spec[k]);
+                return factory.create(k, o[k], _this2._spec.spec[k], $this);
             });
         }
     }]);

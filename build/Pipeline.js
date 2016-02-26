@@ -27,7 +27,7 @@ var _Pipe2 = _interopRequireDefault(_Pipe);
  */
 
 var Pipeline = (function () {
-    function Pipeline(key, value, work, builtins) {
+    function Pipeline(key, value, work, builtins, $this) {
         _classCallCheck(this, Pipeline);
 
         this.key = key;
@@ -35,6 +35,7 @@ var Pipeline = (function () {
         this.builtins = builtins;
         this._work = work;
         this._events = new _events2['default'].EventEmitter();
+        this._this = $this || null;
     }
 
     _createClass(Pipeline, [{
@@ -85,7 +86,7 @@ var Pipeline = (function () {
             args.unshift(this);
             args.unshift(value);
             args.unshift(key);
-            f.apply(null, args);
+            f.apply(this._this, args);
         }
 
         /**

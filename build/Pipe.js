@@ -97,7 +97,7 @@ var Pipe = (function () {
          */
     }, {
         key: 'run',
-        value: function run(o, cb) {
+        value: function run(o, cb, $this) {
             var manager = new _FlowManager2['default'](new _Specification2['default'](this._spec, o, this._builtins), this._events);
             this.once('error', function (err, o) {
                 return cb(err, o);
@@ -106,7 +106,7 @@ var Pipe = (function () {
                 return cb(null, o);
             });
             this._events.emit('start');
-            manager.run(o);
+            manager.run(o, $this);
         }
     }]);
 

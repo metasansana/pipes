@@ -67,12 +67,12 @@ class Pipe {
     /**
      * run starts the pipe lines based on the internal spec
      */
-    run(o, cb) {
+    run(o, cb, $this) {
         var manager = new FlowManager(new Specification(this._spec, o, this._builtins), this._events);
         this.once('error', (err, o) => cb(err, o));
         this.once('success', o => cb(null, o));
         this._events.emit('start');
-        manager.run(o);
+        manager.run(o, $this);
 
     }
 

@@ -37,12 +37,13 @@ var PipingFactory = (function () {
      * @param {string} key 
      * @param {*} value 
      * @param {array|object|string} specLine
+     * @param {object} [$this]
      * @returns {Piping} 
      */
 
     _createClass(PipingFactory, [{
         key: 'create',
-        value: function create(key, value, specLine) {
+        value: function create(key, value, specLine, $this) {
             var _this = this;
 
             var line;
@@ -53,10 +54,10 @@ var PipingFactory = (function () {
                     return _this._manager.error(err, key, value);
                 }).on('success', function (value) {
                     return _this._manager.success(key, value);
-                }).run(value, function () {});
+                }).run(value, function () {}, $this);
             }
 
-            line = new _Pipeline2['default'](key, value, this._spec.get(key), this._spec.builtins);
+            line = new _Pipeline2['default'](key, value, this._spec.get(key), this._spec.builtins, $this);
 
             return line.on('error', this._manager.error.bind(this._manager)).on('success', this._manager.success.bind(this._manager)).run();
         }

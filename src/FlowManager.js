@@ -70,13 +70,13 @@ class FlowManager {
 
     }
 
-    run(o) {
+    run(o, $this) {
 
         var factory = new PipingFactory(this, this._spec);
         var runs = this._spec.keys();
         this._count = runs.length;
         runs.
-        forEach(k => factory.create(k, o[k], this._spec.spec[k]));
+        forEach(k => factory.create(k, o[k], this._spec.spec[k], $this));
 
     }
 

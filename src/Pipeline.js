@@ -10,12 +10,13 @@ import Pipe from './Pipe';
  */
 class Pipeline {
 
-    constructor(key, value, work, builtins) {
+    constructor(key, value, work, builtins, $this) {
         this.key = key;
         this.value = value;
         this.builtins = builtins;
         this._work = work;
         this._events = new events.EventEmitter();
+        this._this = $this || null;
     }
 
     on() {
@@ -63,7 +64,7 @@ class Pipeline {
         args.unshift(this);
         args.unshift(value);
         args.unshift(key);
-        f.apply(null, args);
+        f.apply(this._this, args);
 
     }
 
