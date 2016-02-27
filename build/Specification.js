@@ -100,6 +100,8 @@ var Specification = (function () {
 
             if (Specification.KEYWORDS.indexOf(key) > -1) {
                 work = null;
+            } else if (!this.o[key] && Array.isArray(this.o['@optional']) && this.o['@optional'].indexOf(key > -1)) {
+                work = null;
             } else {
 
                 if (this.spec[key]) {
@@ -184,6 +186,6 @@ var Specification = (function () {
     return Specification;
 })();
 
-Specification.KEYWORDS = ['@after', '@array', '?', '*', '!'];
+Specification.KEYWORDS = ['@after', '@array', '?', '*', '!', '@nullable'];
 exports['default'] = Specification;
 module.exports = exports['default'];
