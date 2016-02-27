@@ -81,10 +81,12 @@ class Specification {
 
         var work = [];
 
+        if(Array.isArray(this.spec['@nullable']))
+          if(this.spec['@nullable'].indexOf(key) > -1)
+if(!this.o[key])
+  return work;
+
         if (Specification.KEYWORDS.indexOf(key) > -1) {
-            work = null;
-        } else if ((!this.o[key]) &&
-            (Array.isArray(this.o['@nullable'])) && (this.o['@nullable'].indexOf(key > -1))) {
             work = null;
         } else {
 
