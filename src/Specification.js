@@ -83,76 +83,79 @@ class Specification {
 
         if (Specification.KEYWORDS.indexOf(key) > -1) {
             work = null;
-        } else {
-
-            if (this.spec[key]) {
-                work.push.apply(work, slice(this.spec[key]));
-            } else {
-                work.push.apply(work, this.unknown());
-            }
-
-            work.push.apply(work, this.all());
-
-            if (work.length === 0)
+        } else if ((!this.o[key]) &&
+            (Array.isArray(this.o['@optional'])) && (this.o['@optional'].indexOf(key > -1))) {
                 work = null;
+            } else {
+
+                if (this.spec[key]) {
+                    work.push.apply(work, slice(this.spec[key]));
+                } else {
+                    work.push.apply(work, this.unknown());
+                }
+
+                work.push.apply(work, this.all());
+
+                if (work.length === 0)
+                    work = null;
+            }
+            return this._substitute(work, this.builtins, key);
+
         }
-        return this._substitute(work, this.builtins, key);
+
+        /**
+         * unknown returns a list of filters for handling
+         * unknown properties
+         */
+        unknown() {
+            if (Array.isArray(this.spec['?'])) return this.spec['?'];
+            return reject;
+        }
+
+        /**
+         * all returns a list of filters that all keys must be passed through
+         */
+        all() {
+            if (Array.isArray(this.spec['*'])) return this.spec['*'];
+            return passthrough;
+        }
+
+        /**
+         * after returns the @after list of filters
+         */
+        after() {
+            if (Array.isArray(this.spec['@after'])) return this.spec['@after'];
+            return passthrough;
+        }
+
+        /**
+         * array returns the list of keys that must be arrays
+         */
+        array() {
+            if (this.spec['@array']) return this.spec['@array'];
+            return [];
+        }
+
+        /**
+         * keys returns an array of all the keys that will be passed
+         * through the filters.
+         * @returns {array}
+         */
+        keys() {
+            return Object.keys(this.o).
+            concat(this.userKeys()).
+            filter((key, index, array) => (array.indexOf(key) === index));
+        }
+
+        /**
+         * userKeys returns an array of non-keyword keys
+         */
+        userKeys() {
+            return Object.keys(this.spec).
+            filter(k => Specification.KEYWORDS.indexOf(k) < 0);
+        }
 
     }
 
-    /**
-     * unknown returns a list of filters for handling
-     * unknown properties
-     */
-    unknown() {
-        if (Array.isArray(this.spec['?'])) return this.spec['?'];
-        return reject;
-    }
-
-    /**
-     * all returns a list of filters that all keys must be passed through
-     */
-    all() {
-        if (Array.isArray(this.spec['*'])) return this.spec['*'];
-        return passthrough;
-    }
-
-    /**
-     * after returns the @after list of filters
-     */
-    after() {
-        if (Array.isArray(this.spec['@after'])) return this.spec['@after'];
-        return passthrough;
-    }
-
-    /**
-     * array returns the list of keys that must be arrays
-     */
-    array() {
-        if (this.spec['@array']) return this.spec['@array'];
-        return [];
-    }
-
-    /**
-     * keys returns an array of all the keys that will be passed
-     * through the filters.
-     * @returns {array}
-     */
-    keys() {
-        return Object.keys(this.o).
-        concat(this.userKeys()).
-        filter((key, index, array) => (array.indexOf(key) === index));
-    }
-
-    /**
-     * userKeys returns an array of non-keyword keys
-     */
-    userKeys() {
-        return Object.keys(this.spec).
-        filter(k => Specification.KEYWORDS.indexOf(k) < 0);
-    }
-
-}
-
-Specification.KEYWORDS = ['@after', '@array', '?', '*', '!'];
-export default Specification
+    Specification.KEYWORDS = ['@after', '@array', '?', '*', '!', '@nullable'];
+    export default Specification
