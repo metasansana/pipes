@@ -100,7 +100,7 @@ var Specification = (function () {
 
             if (Specification.KEYWORDS.indexOf(key) > -1) {
                 work = null;
-            } else if (!this.o[key] && Array.isArray(this.o['@optional']) && this.o['@optional'].indexOf(key > -1)) {
+            } else if (!this.o[key] && Array.isArray(this.o['@nullable']) && this.o['@nullable'].indexOf(key > -1)) {
                 work = null;
             } else {
 
