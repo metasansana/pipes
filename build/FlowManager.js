@@ -69,7 +69,7 @@ var FlowManager = (function () {
 
             this._count = this._count - 1;
 
-            if (value !== null) this._filtered[key] = value;
+            if (value !== null && value !== undefined) this._filtered[key] = value;
 
             this.finish();
         }

@@ -42,7 +42,7 @@ class FlowManager {
 
         this._count = this._count - 1;
 
-        if (value !== null)
+        if ((value !== null) && (value !== undefined))
             this._filtered[key] = value;
 
         this.finish();
