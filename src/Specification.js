@@ -110,7 +110,7 @@ class Specification {
      * unknown properties
      */
     unknown() {
-        if (Array.isArray(this.spec['?'])) return this.spec['?'];
+        if (Array.isArray(this.spec['?'])) return this.spec['?'].slice();
         return reject;
     }
 
@@ -118,7 +118,7 @@ class Specification {
      * all returns a list of filters that all keys must be passed through
      */
     all() {
-        if (Array.isArray(this.spec['*'])) return this.spec['*'];
+        if (Array.isArray(this.spec['*'])) return this.spec['*'].slice();
         return passthrough;
     }
 
