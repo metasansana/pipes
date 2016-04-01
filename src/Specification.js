@@ -89,7 +89,6 @@ class Specification {
         if (Specification.KEYWORDS.indexOf(key) > -1) {
             work = null;
         } else {
-
             if (this.spec[key]) {
                 work.push.apply(work, slice(this.spec[key]));
             } else {
@@ -110,24 +109,35 @@ class Specification {
      * unknown properties
      */
     unknown() {
-        if (Array.isArray(this.spec['?'])) return this.spec['?'].slice();
+
+        if (Array.isArray(this.spec['?']))
+            return this.spec['?'].slice();
+
         return reject;
+
     }
 
     /**
      * all returns a list of filters that all keys must be passed through
      */
     all() {
-        if (Array.isArray(this.spec['*'])) return this.spec['*'].slice();
+
+        if (Array.isArray(this.spec['*']))
+            return this.spec['*'].slice();
+
         return passthrough;
+
     }
 
     /**
      * after returns the @after list of filters
      */
     after() {
-        if (Array.isArray(this.spec['@after'])) return this.spec['@after'].slice();
+
+        if (Array.isArray(this.spec['@after']))
+            return this.spec['@after'].slice();
         return passthrough;
+
     }
 
     /**

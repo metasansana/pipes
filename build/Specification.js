@@ -103,7 +103,6 @@ var Specification = (function () {
             if (Specification.KEYWORDS.indexOf(key) > -1) {
                 work = null;
             } else {
-
                 if (this.spec[key]) {
                     work.push.apply(work, slice(this.spec[key]));
                 } else {
@@ -124,7 +123,9 @@ var Specification = (function () {
     }, {
         key: 'unknown',
         value: function unknown() {
-            if (Array.isArray(this.spec['?'])) return this.spec['?'];
+
+            if (Array.isArray(this.spec['?'])) return this.spec['?'].slice();
+
             return reject;
         }
 
@@ -134,7 +135,9 @@ var Specification = (function () {
     }, {
         key: 'all',
         value: function all() {
-            if (Array.isArray(this.spec['*'])) return this.spec['*'];
+
+            if (Array.isArray(this.spec['*'])) return this.spec['*'].slice();
+
             return passthrough;
         }
 
@@ -144,7 +147,8 @@ var Specification = (function () {
     }, {
         key: 'after',
         value: function after() {
-            if (Array.isArray(this.spec['@after'])) return this.spec['@after'];
+
+            if (Array.isArray(this.spec['@after'])) return this.spec['@after'].slice();
             return passthrough;
         }
 
