@@ -81,10 +81,10 @@ class Specification {
 
         var work = [];
 
-        if(Array.isArray(this.spec['@nullable']))
-          if(this.spec['@nullable'].indexOf(key) > -1)
-if(!this.o[key])
-  return work;
+        if (Array.isArray(this.spec['@nullable']))
+            if (this.spec['@nullable'].indexOf(key) > -1)
+                if (!this.o[key])
+                    return work;
 
         if (Specification.KEYWORDS.indexOf(key) > -1) {
             work = null;
@@ -126,7 +126,7 @@ if(!this.o[key])
      * after returns the @after list of filters
      */
     after() {
-        if (Array.isArray(this.spec['@after'])) return this.spec['@after'];
+        if (Array.isArray(this.spec['@after'])) return this.spec['@after'].slice();
         return passthrough;
     }
 
