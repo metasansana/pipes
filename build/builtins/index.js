@@ -10,6 +10,7 @@ exports.$repeat = $repeat;
 exports.$set = $set;
 exports.$keep = $keep;
 function t(template, data) {
+    if (typeof template !== 'string') return template;
     return template.replace(/\{([\w\.\-]*)\}/g, function (s, k) {
         return k.split('.').reduce(function (val, i) {
             return val[i];
@@ -31,7 +32,7 @@ function $required(key, value, line, msg) {
 
 function $array(key, value, line, msg) {
 
-    if (!Array.isArray(value)) return line.next(new Error(t(msg || '{key} must be an array!', {
+    if (!Array.isArray(value)) return line.next(new Error(t(typeof msg === 'string' ? msg : '{key} must be an array!', {
         key: key,
         value: value
     })), key, value);

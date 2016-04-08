@@ -1,4 +1,5 @@
 function t(template, data) {
+  if(typeof template !== 'string') return template;
     return template.replace(/\{([\w\.\-]*)\}/g, function(s, k) {
         return k.split('.').reduce(function(val, i) {
             return val[i];
@@ -23,7 +24,7 @@ export function $array(key, value, line, msg) {
 
     if (!Array.isArray(value))
         return line.next(
-            new Error(t(msg || '{key} must be an array!', {
+            new Error(t((typeof msg === 'string') ? msg : '{key} must be an array!', {
                 key,
                 value
             })), key, value);
@@ -131,6 +132,5 @@ export function $set(key, oldValue, line, newValue) {
  * @param {Pipeline} line 
  */
 export function $keep(key, value, line) {
-  return line.next(null, key, value);
+    return line.next(null, key, value);
 }
-
