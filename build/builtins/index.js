@@ -32,7 +32,7 @@ function $required(key, value, line, msg) {
 
 function $array(key, value, line, msg) {
 
-    if (!Array.isArray(value)) return line.next(new Error(t(typeof msg === 'string' ? msg : '{key} must be an array!', {
+    if (!Array.isArray(value)) return line.next(new Error(t(typeof msg === 'string' ? msg : '{key} must be an array! Got ' + typeof value + '!', {
         key: key,
         value: value
     })), key, value);

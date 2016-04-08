@@ -1,5 +1,5 @@
 function t(template, data) {
-  if(typeof template !== 'string') return template;
+    if (typeof template !== 'string') return template;
     return template.replace(/\{([\w\.\-]*)\}/g, function(s, k) {
         return k.split('.').reduce(function(val, i) {
             return val[i];
@@ -24,7 +24,8 @@ export function $array(key, value, line, msg) {
 
     if (!Array.isArray(value))
         return line.next(
-            new Error(t((typeof msg === 'string') ? msg : '{key} must be an array!', {
+            new Error(t((typeof msg === 'string') ? 
+                msg : '{key} must be an array! Got '+typeof value+'!', {
                 key,
                 value
             })), key, value);
