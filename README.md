@@ -1,5 +1,7 @@
 #pipe-transform
 
+# Abandoned, turns out plain old functions are much easier.
+
 Transform an object by sending it down some pipes.
 
 ##Installation
